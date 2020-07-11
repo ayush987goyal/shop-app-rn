@@ -39,9 +39,22 @@ const cartSlice = createSlice({
 
       state.totalAmount += product.price;
     },
+    removeFromCart: (state, action: PayloadAction<string>) => {
+      const productId = action.payload;
+      const cartItem = state.items[productId];
+
+      if (cartItem.quantity > 1) {
+        cartItem.quantity -= 1;
+        cartItem.sum -= cartItem.productPrice;
+      } else {
+        delete state.items[productId];
+      }
+
+      state.totalAmount -= cartItem.productPrice;
+    },
   },
 });
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
