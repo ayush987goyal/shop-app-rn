@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { FlatList, Text, Platform } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -8,6 +8,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { RootState } from '../../store';
 import { OrdersStackParamsList } from '../../navigation/ShopNavigator';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
+import OrderItem from '../../components/shop/OrderItem';
 
 interface OrdersScreenProps {
   navigation: StackNavigationProp<OrdersStackParamsList, 'Orders'> & DrawerNavigationProp<{}>;
@@ -34,7 +35,7 @@ const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
     <FlatList
       data={orders}
       keyExtractor={item => item.id}
-      renderItem={itemData => <Text>{itemData.item.totalAmount}</Text>}
+      renderItem={itemData => <OrderItem order={itemData.item} />}
     />
   );
 };

@@ -6,10 +6,11 @@ import { CartUnit } from '../../models';
 
 interface CartItemProps {
   item: CartUnit;
-  onRemove: () => void;
+  deletable: boolean;
+  onRemove?: () => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
+const CartItem: React.FC<CartItemProps> = ({ item, deletable, onRemove }) => {
   return (
     <View style={styles.cartItem}>
       <View style={styles.itemData}>
@@ -19,13 +20,15 @@ const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
 
       <View style={styles.itemData}>
         <Text style={styles.mainText}>${item.sum.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.deleteBtn} onPress={onRemove}>
-          <Ionicons
-            name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}
-            size={23}
-            color="red"
-          />
-        </TouchableOpacity>
+        {deletable && (
+          <TouchableOpacity style={styles.deleteBtn} onPress={onRemove}>
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}
+              size={23}
+              color="red"
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
