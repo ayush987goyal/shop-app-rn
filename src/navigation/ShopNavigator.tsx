@@ -1,9 +1,11 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { Product } from '../models';
 import Colors from '../constants/Colors';
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
-import { Platform } from 'react-native';
+import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 
 const ProductsStack = createStackNavigator();
 
@@ -19,7 +21,13 @@ const ProductsStackScreen = () => (
       component={ProductsOverviewScreen}
       options={{ headerTitle: 'All Products' }}
     />
+    <ProductsStack.Screen name="ProductDetail" component={ProductDetailScreen} />
   </ProductsStack.Navigator>
 );
+
+export type ProductsStackParamsList = {
+  ProductsOverview: undefined;
+  ProductDetail: { product: Product };
+};
 
 export default ProductsStackScreen;

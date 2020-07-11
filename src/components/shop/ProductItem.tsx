@@ -1,5 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Button,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  Platform,
+} from 'react-native';
 
 import { Product } from '../../models';
 import Colors from '../../constants/Colors';
@@ -11,21 +20,30 @@ interface ProductItemProps {
 }
 
 const ProductItem: React.FC<ProductItemProps> = ({ product, onViewDetail, onAddToCart }) => {
+  let TouchableComp: any = TouchableOpacity;
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableComp = TouchableNativeFeedback;
+  }
+
   return (
     <View style={styles.product}>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{ uri: product.imageUrl }} />
-      </View>
+      <TouchableComp onPress={onViewDetail} useForeground>
+        <View>
+          <View style={styles.imageContainer}>
+            <Image style={styles.image} source={{ uri: product.imageUrl }} />
+          </View>
 
-      <View style={styles.details}>
-        <Text style={styles.title}>{product.title}</Text>
-        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-      </View>
+          <View style={styles.details}>
+            <Text style={styles.title}>{product.title}</Text>
+            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+          </View>
 
-      <View style={styles.actions}>
-        <Button title="View Details" color={Colors.primary} onPress={onViewDetail} />
-        <Button title="To Cart" color={Colors.primary} onPress={onAddToCart} />
-      </View>
+          <View style={styles.actions}>
+            <Button title="View Details" color={Colors.primary} onPress={onViewDetail} />
+            <Button title="To Cart" color={Colors.primary} onPress={onAddToCart} />
+          </View>
+        </View>
+      </TouchableComp>
     </View>
   );
 };
@@ -41,6 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 300,
     margin: 20,
+    overflow: 'hidden',
   },
   imageContainer: {
     width: '100%',
