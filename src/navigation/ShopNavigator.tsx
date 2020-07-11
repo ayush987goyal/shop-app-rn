@@ -11,6 +11,7 @@ import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import CartScreen from '../screens/shop/CartScreen';
 import OrdersScreen from '../screens/shop/OrdersScreen';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
+import EditProductScreen from '../screens/user/EditProductScreen';
 
 const ProductsStack = createStackNavigator();
 const OrdersStack = createStackNavigator();
@@ -67,11 +68,13 @@ const AdminStackScreen = () => (
       component={UserProductsScreen}
       options={{ headerTitle: 'Your Products' }}
     />
+    <AdminStack.Screen name="EditProduct" component={EditProductScreen} />
   </AdminStack.Navigator>
 );
 
 export type AdminStackParamsList = {
   UserProducts: undefined;
+  EditProduct: { product?: Product };
 };
 
 const ShopDrawerScreen = () => (
