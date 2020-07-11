@@ -10,9 +10,11 @@ import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import CartScreen from '../screens/shop/CartScreen';
 import OrdersScreen from '../screens/shop/OrdersScreen';
+import UserProductsScreen from '../screens/user/UserProductsScreen';
 
 const ProductsStack = createStackNavigator();
 const OrdersStack = createStackNavigator();
+const AdminStack = createStackNavigator();
 const ShopDrawer = createDrawerNavigator();
 
 const defaultStackScreenOptions: StackNavigationOptions = {
@@ -58,6 +60,20 @@ export type OrdersStackParamsList = {
   Orders: undefined;
 };
 
+const AdminStackScreen = () => (
+  <AdminStack.Navigator screenOptions={defaultStackScreenOptions}>
+    <AdminStack.Screen
+      name="UserProducts"
+      component={UserProductsScreen}
+      options={{ headerTitle: 'Your Products' }}
+    />
+  </AdminStack.Navigator>
+);
+
+export type AdminStackParamsList = {
+  UserProducts: undefined;
+};
+
 const ShopDrawerScreen = () => (
   <ShopDrawer.Navigator drawerContentOptions={{ activeTintColor: Colors.primary }}>
     <ShopDrawer.Screen
@@ -80,6 +96,19 @@ const ShopDrawerScreen = () => (
         drawerIcon: drawerConfig => (
           <Ionicons
             name={Platform.OS === 'android' ? 'md-list' : 'ios-list'}
+            size={23}
+            color={drawerConfig.color}
+          />
+        ),
+      }}
+    />
+    <ShopDrawer.Screen
+      name="Admin"
+      component={AdminStackScreen}
+      options={{
+        drawerIcon: drawerConfig => (
+          <Ionicons
+            name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
             size={23}
             color={drawerConfig.color}
           />

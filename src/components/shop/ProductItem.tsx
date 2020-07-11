@@ -4,22 +4,19 @@ import {
   Text,
   View,
   Image,
-  Button,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
 } from 'react-native';
 
 import { Product } from '../../models';
-import Colors from '../../constants/Colors';
 
 interface ProductItemProps {
   product: Product;
-  onViewDetail: () => void;
-  onAddToCart: () => void;
+  onSelect: () => void;
 }
 
-const ProductItem: React.FC<ProductItemProps> = ({ product, onViewDetail, onAddToCart }) => {
+const ProductItem: React.FC<ProductItemProps> = ({ product, onSelect, children }) => {
   let TouchableComp: any = TouchableOpacity;
   if (Platform.OS === 'android' && Platform.Version >= 21) {
     TouchableComp = TouchableNativeFeedback;
@@ -27,7 +24,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onViewDetail, onAddT
 
   return (
     <View style={styles.product}>
-      <TouchableComp onPress={onViewDetail} useForeground>
+      <TouchableComp onPress={onSelect} useForeground>
         <View>
           <View style={styles.imageContainer}>
             <Image style={styles.image} source={{ uri: product.imageUrl }} />
@@ -38,10 +35,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onViewDetail, onAddT
             <Text style={styles.price}>${product.price.toFixed(2)}</Text>
           </View>
 
-          <View style={styles.actions}>
-            <Button title="View Details" color={Colors.primary} onPress={onViewDetail} />
-            <Button title="To Cart" color={Colors.primary} onPress={onAddToCart} />
-          </View>
+          <View style={styles.actions}>{children}</View>
         </View>
       </TouchableComp>
     </View>
