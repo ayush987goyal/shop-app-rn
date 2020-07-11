@@ -1,6 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 import { FlatList, Platform, Button } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -10,6 +10,7 @@ import { AdminStackParamsList } from '../../navigation/ShopNavigator';
 import Colors from '../../constants/Colors';
 import ProductItem from '../../components/shop/ProductItem';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
+import { deleteProduct } from '../../store/productsSlice';
 
 interface UserProductsScreenProps {
   navigation: StackNavigationProp<AdminStackParamsList, 'UserProducts'> & DrawerNavigationProp<{}>;
@@ -17,6 +18,7 @@ interface UserProductsScreenProps {
 
 const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) => {
   const products = useSelector((state: RootState) => state.products.userProducts);
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -39,7 +41,11 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
       renderItem={itemData => (
         <ProductItem product={itemData.item} onSelect={() => {}}>
           <Button title="Edit" color={Colors.primary} onPress={() => {}} />
-          <Button title="Delete" color={Colors.primary} onPress={() => {}} />
+          <Button
+            title="Delete"
+            color={Colors.primary}
+            onPress={() => dispatch(deleteProduct(itemData.item.id))}
+          />
         </ProductItem>
       )}
     />

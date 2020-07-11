@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { CartUnit, Product } from '../models';
+import { addOrder } from './ordersSlice';
+import { deleteProduct } from './productsSlice';
 
 interface AddToCartPayload {
   product: Product;
@@ -53,11 +55,20 @@ const cartSlice = createSlice({
 
       state.totalAmount -= cartItem.productPrice;
     },
-
-    clearCart: () => initialState,
   },
+  extraReducers: builder =>
+    builder
+      .addCase(addOrder, () => initialState)
+      .addCase(deleteProduct, (state, action) => {
+        const productId = action.payload;
+
+        if (productId in state.items) {
+          state.totalAmount -= state.items[productId].sum;
+          delete state.items[productId];
+        }
+      }),
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

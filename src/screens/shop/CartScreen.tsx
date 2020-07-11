@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from '../../store';
-import { removeFromCart, clearCart } from '../../store/cartSlice';
+import { removeFromCart } from '../../store/cartSlice';
 import { addOrder } from '../../store/ordersSlice';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
@@ -23,10 +23,7 @@ const CartScreen = () => {
           title="Order Now"
           color={Colors.accent}
           disabled={cartItems.length === 0}
-          onPress={() => {
-            dispatch(addOrder({ cartItems, totalAmount }));
-            dispatch(clearCart());
-          }}
+          onPress={() => dispatch(addOrder({ cartItems, totalAmount }))}
         />
       </View>
 

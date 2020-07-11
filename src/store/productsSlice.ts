@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Product } from '../models';
 import { PRODUCTS } from '../data/dummy-data';
@@ -16,7 +16,16 @@ const initialState: ProductsState = {
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteProduct: (state, action: PayloadAction<string>) => {
+      const productId = action.payload;
+
+      state.userProducts = state.userProducts.filter(p => p.id !== productId);
+      state.availableProducts = state.availableProducts.filter(p => p.id !== productId);
+    },
+  },
 });
+
+export const { deleteProduct } = productsSlice.actions;
 
 export default productsSlice.reducer;
