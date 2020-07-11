@@ -6,7 +6,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import { RootState } from '../../store';
-import { OrdersStackParamsList } from '../../navigation/ShopNavigator';
+import { OrdersStackParamsList } from '../../navigation/OrdersStackScreen';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import OrderItem from '../../components/shop/OrderItem';
 

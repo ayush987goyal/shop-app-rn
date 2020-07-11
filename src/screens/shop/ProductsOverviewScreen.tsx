@@ -7,7 +7,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import { RootState } from '../../store';
 import { Product } from '../../models';
-import { ProductsStackParamsList } from '../../navigation/ShopNavigator';
+import { ProductsStackParamsList } from '../../navigation/ProductStackScreen';
 import { addToCart } from '../../store/cartSlice';
 import Colors from '../../constants/Colors';
 import ProductItem from '../../components/shop/ProductItem';

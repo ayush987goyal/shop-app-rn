@@ -5,7 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useDispatch } from 'react-redux';
 
-import { AdminStackParamsList } from '../../navigation/ShopNavigator';
+import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import { createProduct, updateProduct } from '../../store/productsSlice';
 

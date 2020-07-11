@@ -6,7 +6,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import { RootState } from '../../store';
-import { AdminStackParamsList } from '../../navigation/ShopNavigator';
+import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
 import { deleteProduct } from '../../store/productsSlice';
 import Colors from '../../constants/Colors';
 import ProductItem from '../../components/shop/ProductItem';

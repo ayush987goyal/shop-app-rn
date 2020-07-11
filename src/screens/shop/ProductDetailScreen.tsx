@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
 import { addToCart } from '../../store/cartSlice';
-import { ProductsStackParamsList } from '../../navigation/ShopNavigator';
+import { ProductsStackParamsList } from '../../navigation/ProductStackScreen';
 
 interface ProductDetailScreenProps {
   navigation: StackNavigationProp<ProductsStackParamsList, 'ProductDetail'>;
