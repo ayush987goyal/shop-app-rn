@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { FlatList, Platform, Button } from 'react-native';
+import { FlatList, Platform, Button, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -48,6 +48,17 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
     navigation.navigate('EditProduct', { product });
   };
 
+  const deleteHandler = (productId: string) => {
+    Alert.alert('Are you sure?', 'Do you really want to delete this item?', [
+      { text: 'No', style: 'default' },
+      {
+        text: 'Yes',
+        style: 'destructive',
+        onPress: () => dispatch(deleteProduct(productId)),
+      },
+    ]);
+  };
+
   return (
     <FlatList
       data={products}
@@ -62,7 +73,7 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
           <Button
             title="Delete"
             color={Colors.primary}
-            onPress={() => dispatch(deleteProduct(itemData.item.id))}
+            onPress={() => deleteHandler(itemData.item.id)}
           />
         </ProductItem>
       )}

@@ -36,7 +36,9 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
     } else {
       dispatch(createProduct({ price: parseFloat(price), title, imageUrl, description }));
     }
-  }, [dispatch, product, description, imageUrl, price, title]);
+
+    navigation.goBack();
+  }, [product, navigation, dispatch, title, imageUrl, description, price]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
