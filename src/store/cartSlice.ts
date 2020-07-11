@@ -30,6 +30,7 @@ const cartSlice = createSlice({
       } else {
         state.items[product.id] = {
           quantity: 1,
+          productId: product.id,
           productTitle: product.title,
           productPrice: product.price,
           sum: product.price,
