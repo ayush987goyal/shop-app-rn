@@ -14,3 +14,10 @@ export interface CartUnit {
   productPrice: number;
   sum: number;
 }
+
+export interface Order {
+  id: string;
+  items: CartUnit[];
+  totalAmount: number;
+  date: Date;
+}
