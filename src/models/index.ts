@@ -6,3 +6,10 @@ export interface Product {
   description: string;
   price: number;
 }
+
+export interface CartItem {
+  quantity: number;
+  productTitle: string;
+  productPrice: number;
+  sum: number;
+}

@@ -2,9 +2,11 @@ import React, { useLayoutEffect } from 'react';
 import { StyleSheet, ScrollView, Image, Text, Button, View } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useDispatch } from 'react-redux';
 
-import { ProductsStackParamsList } from '../../navigation/ShopNavigator';
 import Colors from '../../constants/Colors';
+import { addToCart } from '../../store/cartSlice';
+import { ProductsStackParamsList } from '../../navigation/ShopNavigator';
 
 interface ProductDetailScreenProps {
   navigation: StackNavigationProp<ProductsStackParamsList, 'ProductDetail'>;
@@ -13,6 +15,7 @@ interface ProductDetailScreenProps {
 
 const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ navigation, route }) => {
   const { product: selectedProduct } = route.params;
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -25,7 +28,11 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({ navigation, r
       <Image style={styles.image} source={{ uri: selectedProduct.imageUrl }} />
 
       <View style={styles.actions}>
-        <Button title="Add to Cart" color={Colors.primary} onPress={() => {}} />
+        <Button
+          title="Add to Cart"
+          color={Colors.primary}
+          onPress={() => dispatch(addToCart({ product: selectedProduct }))}
+        />
       </View>
 
       <Text style={styles.price}>${selectedProduct.price.toFixed(2)}</Text>
