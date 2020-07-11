@@ -26,7 +26,7 @@ const ordersSlice = createSlice({
         id: Date.now().toString(),
         items: cartItems,
         totalAmount,
-        date: new Date(),
+        date: new Date().getTime(),
       });
     },
   },

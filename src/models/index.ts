@@ -19,5 +19,5 @@ export interface Order {
   id: string;
   items: CartUnit[];
   totalAmount: number;
-  date: Date;
+  date: number;
 }
