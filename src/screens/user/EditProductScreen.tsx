@@ -1,11 +1,13 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useCallback } from 'react';
 import { StyleSheet, Text, View, TextInput, ScrollView, Platform } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useDispatch } from 'react-redux';
 
 import { AdminStackParamsList } from '../../navigation/ShopNavigator';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
+import { createProduct, updateProduct } from '../../store/productsSlice';
 
 interface EditProductScreenProps {
   navigation: StackNavigationProp<AdminStackParamsList, 'EditProduct'>;
@@ -14,11 +16,27 @@ interface EditProductScreenProps {
 
 const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation }) => {
   const { product } = route.params;
+  const dispatch = useDispatch();
 
   const [title, setTitle] = useState(product?.title || '');
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || '');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState(product?.description || '');
+
+  const submitHandler = useCallback(() => {
+    if (product) {
+      dispatch(
+        updateProduct({
+          id: product.id,
+          title,
+          imageUrl,
+          description,
+        })
+      );
+    } else {
+      dispatch(createProduct({ price: parseFloat(price), title, imageUrl, description }));
+    }
+  }, [dispatch, product, description, imageUrl, price, title]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -28,12 +46,12 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
           <Item
             title="Save"
             iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
-            onPress={() => {}}
+            onPress={submitHandler}
           />
         </HeaderButtons>
       ),
     });
-  }, [navigation, product]);
+  }, [navigation, product, submitHandler]);
 
   return (
     <ScrollView>
