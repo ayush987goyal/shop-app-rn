@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { CartItem, Product } from '../models';
+import { CartUnit, Product } from '../models';
 
 interface AddToCartPayload {
   product: Product;
 }
 
 interface CartState {
-  items: Record<string, CartItem>;
+  items: Record<string, CartUnit>;
   totalAmount: number;
 }
 

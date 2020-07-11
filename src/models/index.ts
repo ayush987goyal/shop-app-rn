@@ -7,7 +7,7 @@ export interface Product {
   price: number;
 }
 
-export interface CartItem {
+export interface CartUnit {
   quantity: number;
   productId: string;
   productTitle: string;
