@@ -7,7 +7,7 @@ import { setConsole, ReactQueryConfigProvider } from 'react-query';
 import * as Font from 'expo-font';
 
 import store from './src/store';
-import ShopNavigator from './src/navigation/ShopNavigator';
+import AppStackScreen from './src/navigation/AppStackScreen';
 
 setConsole({
   log: console.log,
@@ -33,7 +33,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <ReactQueryConfigProvider config={{ queries: { retry: false } }}>
-          <ShopNavigator />
+          <AppStackScreen isLoggedIn={false} />
         </ReactQueryConfigProvider>
       </NavigationContainer>
     </Provider>
