@@ -1,18 +1,28 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, Alert, ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import { useMutation } from 'react-query';
 
 import { RootState } from '../../store';
-import { removeFromCart } from '../../store/cartSlice';
-import { addOrder } from '../../store/ordersSlice';
+import { removeFromCart, clearCart } from '../../store/cartSlice';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
 import Card from '../../components/UI/Card';
+import { saveOrder } from '../../service/service';
 
 const CartScreen = () => {
   const totalAmount = useSelector((state: RootState) => state.cart.totalAmount);
   const cartItems = useSelector((state: RootState) => Object.values(state.cart.items));
   const dispatch = useDispatch();
+
+  const [mutate, { isLoading, reset }] = useMutation(saveOrder, {
+    onError: (error: Error) => {
+      Alert.alert('An error occured!', error.message, [{ text: 'Okay', onPress: reset }]);
+    },
+    onSuccess: () => {
+      dispatch(clearCart());
+    },
+  });
 
   return (
     <View style={styles.screen}>
@@ -21,12 +31,16 @@ const CartScreen = () => {
           Total:{' '}
           <Text style={styles.amount}>${(Math.round(totalAmount * 100) / 100).toFixed(2)}</Text>
         </Text>
-        <Button
-          title="Order Now"
-          color={Colors.accent}
-          disabled={cartItems.length === 0}
-          onPress={() => dispatch(addOrder({ cartItems, totalAmount }))}
-        />
+        {isLoading ? (
+          <ActivityIndicator color={Colors.primary} />
+        ) : (
+          <Button
+            title="Order Now"
+            color={Colors.accent}
+            disabled={cartItems.length === 0}
+            onPress={() => mutate({ cartItems, totalAmount })}
+          />
+        )}
       </Card>
 
       <FlatList

@@ -1,16 +1,18 @@
 import React, { useLayoutEffect } from 'react';
-import { StyleSheet, View, ScrollView, Platform } from 'react-native';
+import { StyleSheet, View, ScrollView, Platform, ActivityIndicator, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { useDispatch } from 'react-redux';
+import { queryCache, useMutation } from 'react-query';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
 import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
-import { createProduct, updateProduct } from '../../store/productsSlice';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import Input from '../../components/UI/Input';
+import { saveProduct, updateProduct } from '../../service/service';
+import { FETCH_ALL_PRODUCTS_KEY } from '../../service/query-hooks';
+import Colors from '../../constants/Colors';
 
 interface ProductFormValues {
   title: string;
@@ -33,7 +35,38 @@ interface EditProductScreenProps {
 
 const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation }) => {
   const { product } = route.params;
-  const dispatch = useDispatch();
+
+  const mutationSuccessHandler = async () => {
+    await queryCache.invalidateQueries(FETCH_ALL_PRODUCTS_KEY);
+    navigation.goBack();
+  };
+
+  const mutationErrorHandler = (error: Error) => {
+    Alert.alert('An error occured!', error.message, [
+      {
+        text: 'Okay',
+        onPress: () => {
+          resetUpdate();
+          resetSave();
+        },
+      },
+    ]);
+  };
+
+  const [updateProductMutate, { isLoading: isUpdateLoading, reset: resetUpdate }] = useMutation(
+    updateProduct,
+    {
+      onSuccess: mutationSuccessHandler,
+      onError: mutationErrorHandler,
+    }
+  );
+  const [saveProductMutate, { isLoading: isSaveLoading, reset: resetSave }] = useMutation(
+    saveProduct,
+    {
+      onSuccess: mutationSuccessHandler,
+      onError: mutationErrorHandler,
+    }
+  );
 
   const { values, touched, errors, setFieldValue, setFieldTouched, handleSubmit } = useFormik<
     ProductFormValues
@@ -49,12 +82,10 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
       const { title, imageUrl, price, description } = fieldValues;
 
       if (product) {
-        dispatch(updateProduct({ id: product.id, title, imageUrl, description }));
+        updateProductMutate({ id: product.id, title, imageUrl, description });
       } else {
-        dispatch(createProduct({ price: +price, title, imageUrl, description }));
+        saveProductMutate({ price: +price, title, imageUrl, description, ownerId: 'u1' });
       }
-
-      navigation.goBack();
     },
   });
 
@@ -72,6 +103,14 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
       ),
     });
   }, [navigation, product, handleSubmit]);
+
+  if (isUpdateLoading || isSaveLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <ScrollView>
@@ -126,6 +165,11 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
 const styles = StyleSheet.create({
   form: {
     margin: 20,
+  },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

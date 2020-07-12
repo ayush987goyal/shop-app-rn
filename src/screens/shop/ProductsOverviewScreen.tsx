@@ -1,14 +1,22 @@
 import React, { useLayoutEffect } from 'react';
-import { FlatList, Platform, Button } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import {
+  FlatList,
+  Platform,
+  Button,
+  ActivityIndicator,
+  View,
+  StyleSheet,
+  Text,
+} from 'react-native';
+import { useDispatch } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import { RootState } from '../../store';
 import { Product } from '../../models';
 import { ProductsStackParamsList } from '../../navigation/ProductStackScreen';
 import { addToCart } from '../../store/cartSlice';
+import { useProducts, useRefetchOnFocus } from '../../service/query-hooks';
 import Colors from '../../constants/Colors';
 import ProductItem from '../../components/shop/ProductItem';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
@@ -20,7 +28,9 @@ interface ProductsOverviewScreenProps {
 
 const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.products.availableProducts);
+
+  const { isLoading, isError, data: products, refetch } = useProducts();
+  useRefetchOnFocus(refetch);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -49,6 +59,31 @@ const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({ navigat
     navigation.navigate('ProductDetail', { product });
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.centered}>
+        <Text>An error occured!</Text>
+        <Button title="Try Again" onPress={() => refetch()} />
+      </View>
+    );
+  }
+
+  if (!products || !products.length) {
+    return (
+      <View style={styles.centered}>
+        <Text>No products found. Maybe start adding some!</Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={products}
@@ -70,5 +105,13 @@ const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({ navigat
     />
   );
 };
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default ProductsOverviewScreen;

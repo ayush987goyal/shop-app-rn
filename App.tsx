@@ -3,10 +3,17 @@ import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { AppLoading } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
+import { setConsole, ReactQueryConfigProvider } from 'react-query';
 import * as Font from 'expo-font';
 
 import store from './src/store';
 import ShopNavigator from './src/navigation/ShopNavigator';
+
+setConsole({
+  log: console.log,
+  warn: console.log,
+  error: console.log,
+});
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -25,7 +32,9 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <ShopNavigator />
+        <ReactQueryConfigProvider config={{ queries: { retry: false } }}>
+          <ShopNavigator />
+        </ReactQueryConfigProvider>
       </NavigationContainer>
     </Provider>
   );

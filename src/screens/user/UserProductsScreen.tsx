@@ -1,25 +1,34 @@
 import React, { useLayoutEffect } from 'react';
-import { FlatList, Platform, Button, Alert } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import {
+  FlatList,
+  Platform,
+  Button,
+  Alert,
+  View,
+  ActivityIndicator,
+  Text,
+  StyleSheet,
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { queryCache } from 'react-query';
 
-import { RootState } from '../../store';
 import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
-import { deleteProduct } from '../../store/productsSlice';
 import Colors from '../../constants/Colors';
 import ProductItem from '../../components/shop/ProductItem';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import { Product } from '../../models';
+import { useProducts, useRefetchOnFocus, FETCH_ALL_PRODUCTS_KEY } from '../../service/query-hooks';
+import { deleteProduct } from '../../service/service';
 
 interface UserProductsScreenProps {
   navigation: StackNavigationProp<AdminStackParamsList, 'UserProducts'> & DrawerNavigationProp<{}>;
 }
 
 const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) => {
-  const products = useSelector((state: RootState) => state.products.userProducts);
-  const dispatch = useDispatch();
+  const { isLoading, isError, data: products, refetch } = useProducts('u1');
+  useRefetchOnFocus(refetch);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -54,10 +63,38 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
       {
         text: 'Yes',
         style: 'destructive',
-        onPress: () => dispatch(deleteProduct(productId)),
+        onPress: async () => {
+          await deleteProduct(productId);
+          await queryCache.invalidateQueries(FETCH_ALL_PRODUCTS_KEY);
+        },
       },
     ]);
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.centered}>
+        <Text>An error occured!</Text>
+        <Button title="Try Again" onPress={() => refetch()} />
+      </View>
+    );
+  }
+
+  if (!products || !products.length) {
+    return (
+      <View style={styles.centered}>
+        <Text>No products found. Maybe start adding some!</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -80,5 +117,13 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
     />
   );
 };
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default UserProductsScreen;
