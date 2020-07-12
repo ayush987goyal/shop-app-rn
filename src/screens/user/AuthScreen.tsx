@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, ScrollView, Button } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, ScrollView, Button, Alert, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -7,6 +7,8 @@ import * as yup from 'yup';
 import Card from '../../components/UI/Card';
 import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
+import { useMutation } from 'react-query';
+import { authenticate } from '../../service/service';
 
 interface AuthFormValues {
   email: string;
@@ -22,10 +24,24 @@ const authSchema = yup.object<AuthFormValues>({
 });
 
 const AuthScreen = () => {
-  const { values, touched, errors, setFieldValue, setFieldTouched } = useFormik<AuthFormValues>({
+  const [isLogin, setIsLogin] = useState(true);
+  const [mutate, { isLoading, reset }] = useMutation(authenticate, {
+    onError: err => {
+      Alert.alert('An error occured', err.message, [{ text: 'Okay', onPress: reset }]);
+    },
+    onSuccess: res => {
+      console.log('Comp', res);
+    },
+  });
+
+  const { values, touched, errors, setFieldValue, setFieldTouched, handleSubmit } = useFormik<
+    AuthFormValues
+  >({
     initialValues: { email: '', password: '' },
     validationSchema: authSchema,
-    onSubmit: () => {},
+    onSubmit: formValues => {
+      mutate({ email: formValues.email, password: formValues.password, isLogin });
+    },
   });
 
   return (
@@ -55,10 +71,22 @@ const AuthScreen = () => {
             />
 
             <View style={styles.buttonContainer}>
-              <Button title="Login" color={Colors.primary} onPress={() => {}} />
+              {isLoading ? (
+                <ActivityIndicator color={Colors.primary} />
+              ) : (
+                <Button
+                  title={isLogin ? 'Login' : 'Sign Up'}
+                  color={Colors.primary}
+                  onPress={() => handleSubmit()}
+                />
+              )}
             </View>
             <View style={styles.buttonContainer}>
-              <Button title="Switch to Sign Up" color={Colors.accent} onPress={() => {}} />
+              <Button
+                title={isLogin ? 'Switch to Sign Up' : 'Switch to Login'}
+                color={Colors.accent}
+                onPress={() => setIsLogin(curr => !curr)}
+              />
             </View>
           </ScrollView>
         </Card>

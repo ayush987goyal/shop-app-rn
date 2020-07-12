@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Constants from 'expo-constants';
 
 import { Product, CartUnit, Order } from '../models';
 
@@ -9,6 +10,7 @@ interface SaveOrderPayload {
 
 const BASE_URL = 'https://meals-rn-app.firebaseio.com';
 const PRODUCTS_URL = `${BASE_URL}/products.json`;
+const API_KEY = Constants.manifest.extra.apiKey;
 
 export async function fetchAllProducts(user?: string): Promise<Product[]> {
   const { data } = await axios.get(PRODUCTS_URL);
@@ -44,4 +46,47 @@ export async function saveOrder(orderData: SaveOrderPayload): Promise<string> {
     date: new Date().getTime(),
   });
   return data.name;
+}
+
+export async function authenticate(authData: {
+  email: string;
+  password: string;
+  isLogin: boolean;
+}) {
+  const { email, password, isLogin } = authData;
+
+  try {
+    const { data } = await axios.post(
+      `https://identitytoolkit.googleapis.com/v1/accounts:${
+        isLogin ? 'signInWithPassword' : 'signUp'
+      }?key=${API_KEY}`,
+      {
+        email,
+        password,
+        returnSecureToken: true,
+      }
+    );
+
+    return { token: data.idToken, expiresIn: data.expiresIn };
+  } catch (err) {
+    const errorRes = err.response.data;
+    const errorId = errorRes.error.message;
+    let message = '';
+
+    switch (errorId) {
+      case 'EMAIL_NOT_FOUND':
+        message = 'This email could not be found!';
+        break;
+      case 'INVALID_PASSWORD':
+        message = 'This password is not valid!';
+        break;
+      case 'EMAIL_EXISTS':
+        message = 'This email already exists!';
+        break;
+      default:
+        message = 'Something went wrong!';
+    }
+
+    throw new Error(message);
+  }
 }
