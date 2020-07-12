@@ -11,7 +11,11 @@ const Input: React.FC<InputProps> = props => {
     <View style={styles.control}>
       <Text style={styles.label}>{props.label}</Text>
       <TextInput {...props} style={styles.input} />
-      {props.errorText && <Text>{props.errorText}</Text>}
+      {props.errorText && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.error}>{props.errorText}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -29,6 +33,14 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+  },
+  errorContainer: {
+    marginVertical: 5,
+  },
+  error: {
+    fontFamily: 'open-sans',
+    color: 'red',
+    fontSize: 13,
   },
 });
 
