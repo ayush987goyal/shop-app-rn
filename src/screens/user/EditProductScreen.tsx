@@ -1,13 +1,30 @@
-import React, { useLayoutEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, Platform } from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { StyleSheet, View, ScrollView, Platform } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useDispatch } from 'react-redux';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
-import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import { createProduct, updateProduct } from '../../store/productsSlice';
+import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
+import Input from '../../components/UI/Input';
+
+interface ProductFormValues {
+  title: string;
+  imageUrl: string;
+  price: string;
+  description: string;
+}
+
+const productSchema = yup.object<ProductFormValues>({
+  title: yup.string().required('Title is required!'),
+  imageUrl: yup.string().url('Please enter a valid url!').required('Image URL is required!'),
+  price: yup.string().required('Price is required!'),
+  description: yup.string().required('Description is required!'),
+});
 
 interface EditProductScreenProps {
   navigation: StackNavigationProp<AdminStackParamsList, 'EditProduct'>;
@@ -18,27 +35,28 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
   const { product } = route.params;
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState(product?.title || '');
-  const [imageUrl, setImageUrl] = useState(product?.imageUrl || '');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState(product?.description || '');
+  const { values, touched, errors, setFieldValue, setFieldTouched, handleSubmit } = useFormik<
+    ProductFormValues
+  >({
+    initialValues: {
+      title: product?.title || '',
+      imageUrl: product?.imageUrl || '',
+      price: product ? `${product.price}` : '',
+      description: product?.description || '',
+    },
+    validationSchema: productSchema,
+    onSubmit: fieldValues => {
+      const { title, imageUrl, price, description } = fieldValues;
 
-  const submitHandler = useCallback(() => {
-    if (product) {
-      dispatch(
-        updateProduct({
-          id: product.id,
-          title,
-          imageUrl,
-          description,
-        })
-      );
-    } else {
-      dispatch(createProduct({ price: parseFloat(price), title, imageUrl, description }));
-    }
+      if (product) {
+        dispatch(updateProduct({ id: product.id, title, imageUrl, description }));
+      } else {
+        dispatch(createProduct({ price: +price, title, imageUrl, description }));
+      }
 
-    navigation.goBack();
-  }, [product, navigation, dispatch, title, imageUrl, description, price]);
+      navigation.goBack();
+    },
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -48,41 +66,58 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
           <Item
             title="Save"
             iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
-            onPress={submitHandler}
+            onPress={handleSubmit}
           />
         </HeaderButtons>
       ),
     });
-  }, [navigation, product, submitHandler]);
+  }, [navigation, product, handleSubmit]);
 
   return (
     <ScrollView>
       <View style={styles.form}>
-        <View style={styles.control}>
-          <Text style={styles.label}>Title</Text>
-          <TextInput style={styles.input} value={title} onChangeText={t => setTitle(t)} />
-        </View>
+        <Input
+          label="Title"
+          value={values.title}
+          onChangeText={t => setFieldValue('title', t)}
+          onBlur={() => setFieldTouched('title')}
+          errorText={touched.title ? errors.title : undefined}
+          autoCapitalize="sentences"
+          autoCorrect
+          returnKeyType="next"
+        />
 
-        <View style={styles.control}>
-          <Text style={styles.label}>Image URl</Text>
-          <TextInput style={styles.input} value={imageUrl} onChangeText={t => setImageUrl(t)} />
-        </View>
+        <Input
+          label="Image URL"
+          value={values.imageUrl}
+          onChangeText={t => setFieldValue('imageUrl', t)}
+          onBlur={() => setFieldTouched('imageUrl')}
+          errorText={touched.imageUrl ? errors.imageUrl : undefined}
+          returnKeyType="next"
+        />
 
         {!product && (
-          <View style={styles.control}>
-            <Text style={styles.label}>Price</Text>
-            <TextInput style={styles.input} value={price} onChangeText={t => setPrice(t)} />
-          </View>
+          <Input
+            label="Price"
+            value={values.price}
+            onChangeText={t => setFieldValue('price', t)}
+            onBlur={() => setFieldTouched('price')}
+            errorText={touched.price ? errors.price : undefined}
+            returnKeyType="next"
+            keyboardType="decimal-pad"
+          />
         )}
 
-        <View style={styles.control}>
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            style={styles.input}
-            value={description}
-            onChangeText={t => setDescription(t)}
-          />
-        </View>
+        <Input
+          label="Description"
+          value={values.description}
+          onChangeText={t => setFieldValue('description', t)}
+          onBlur={() => setFieldTouched('description')}
+          errorText={touched.description ? errors.description : undefined}
+          returnKeyType="next"
+          multiline
+          numberOfLines={3}
+        />
       </View>
     </ScrollView>
   );
@@ -91,19 +126,6 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
 const styles = StyleSheet.create({
   form: {
     margin: 20,
-  },
-  control: {
-    width: '100%',
-  },
-  label: {
-    fontFamily: 'open-sans-bold',
-    marginVertical: 8,
-  },
-  input: {
-    paddingHorizontal: 2,
-    paddingVertical: 5,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
   },
 });
 
