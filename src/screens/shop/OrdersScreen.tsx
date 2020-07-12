@@ -23,7 +23,7 @@ interface OrdersScreenProps {
 }
 
 const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
-  const { isLoading, isError, data: orders, refetch } = useOrders('u1');
+  const { isLoading, isError, isFetching, data: orders, refetch } = useOrders('u1');
   useRefetchOnFocus(refetch);
 
   useLayoutEffect(() => {
@@ -67,6 +67,8 @@ const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
 
   return (
     <FlatList
+      onRefresh={refetch}
+      refreshing={isFetching}
       data={orders}
       keyExtractor={item => item.id}
       renderItem={itemData => <OrderItem order={itemData.item} />}

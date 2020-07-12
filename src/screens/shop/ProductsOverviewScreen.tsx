@@ -29,7 +29,7 @@ interface ProductsOverviewScreenProps {
 const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { isLoading, isError, data: products, refetch } = useProducts();
+  const { isLoading, isError, isFetching, data: products, refetch } = useProducts();
   useRefetchOnFocus(refetch);
 
   useLayoutEffect(() => {
@@ -86,6 +86,8 @@ const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({ navigat
 
   return (
     <FlatList
+      onRefresh={refetch}
+      refreshing={isFetching}
       data={products}
       keyExtractor={item => item.id}
       renderItem={itemData => (
