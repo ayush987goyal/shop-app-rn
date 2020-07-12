@@ -13,6 +13,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { queryCache } from 'react-query';
+import { useDispatch } from 'react-redux';
 
 import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
 import Colors from '../../constants/Colors';
@@ -21,6 +22,7 @@ import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import { Product } from '../../models';
 import { useProducts, useRefetchOnFocus, FETCH_ALL_PRODUCTS_KEY } from '../../service/query-hooks';
 import { deleteProduct } from '../../service/service';
+import { deleteProductInCart } from '../../store/cartSlice';
 
 interface UserProductsScreenProps {
   navigation: StackNavigationProp<AdminStackParamsList, 'UserProducts'> & DrawerNavigationProp<{}>;
@@ -29,6 +31,8 @@ interface UserProductsScreenProps {
 const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) => {
   const { isLoading, isError, data: products, refetch } = useProducts('u1');
   useRefetchOnFocus(refetch);
+
+  const dispath = useDispatch();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -65,6 +69,7 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
         style: 'destructive',
         onPress: async () => {
           await deleteProduct(productId);
+          dispath(deleteProductInCart(productId));
           await queryCache.invalidateQueries(FETCH_ALL_PRODUCTS_KEY);
         },
       },
