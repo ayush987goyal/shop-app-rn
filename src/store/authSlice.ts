@@ -1,8 +1,10 @@
+import { AsyncStorage } from 'react-native';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface SetAuthDataPayload {
   token: string;
   userId: string;
+  expiresIn: number;
 }
 
 interface AuthState {
@@ -20,12 +22,26 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setAuthData: (state, action: PayloadAction<SetAuthDataPayload>) => {
-      state.token = action.payload.token;
-      state.userId = action.payload.userId;
+      const { token, userId } = action.payload;
+      state.token = token;
+      state.userId = userId;
+      saveDataToStorage(action.payload);
+    },
+
+    clearAuthData: state => {
+      state.token = null;
+      state.userId = null;
+      AsyncStorage.removeItem('authData');
     },
   },
 });
 
-export const { setAuthData } = authSlice.actions;
+function saveDataToStorage({ token, userId, expiresIn }: SetAuthDataPayload) {
+  const expiryDate = new Date(new Date().getTime() + expiresIn * 1000).toISOString();
+
+  AsyncStorage.setItem('authData', JSON.stringify({ token, userId, expiryDate }));
+}
+
+export const { setAuthData, clearAuthData } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -34,7 +34,7 @@ const AuthScreen = () => {
       Alert.alert('An error occured', err.message, [{ text: 'Okay', onPress: reset }]);
     },
     onSuccess: res => {
-      dispatch(setAuthData({ token: res.token, userId: res.userId }));
+      dispatch(setAuthData({ token: res.token, userId: res.userId, expiresIn: +res.expiresIn }));
     },
   });
 
