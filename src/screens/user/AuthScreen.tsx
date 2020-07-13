@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView, Button, Alert, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useMutation } from 'react-query';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
 import Card from '../../components/UI/Card';
 import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
-import { useMutation } from 'react-query';
 import { authenticate } from '../../service/service';
+import { useDispatch } from 'react-redux';
+import { setAuthData } from '../../store/authSlice';
 
 interface AuthFormValues {
   email: string;
@@ -25,12 +27,14 @@ const authSchema = yup.object<AuthFormValues>({
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const dispatch = useDispatch();
+
   const [mutate, { isLoading, reset }] = useMutation(authenticate, {
     onError: err => {
       Alert.alert('An error occured', err.message, [{ text: 'Okay', onPress: reset }]);
     },
     onSuccess: res => {
-      console.log('Comp', res);
+      dispatch(setAuthData({ token: res.token, userId: res.userId }));
     },
   });
 

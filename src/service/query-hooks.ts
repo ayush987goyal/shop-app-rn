@@ -15,14 +15,14 @@ export function useRefetchOnFocus(refetch: () => void) {
   );
 }
 
-export function useProducts(user?: string) {
+export function useProducts(user: string | null) {
   return useQuery(
     [FETCH_ALL_PRODUCTS_KEY, { user }],
     async (key, { user: userId }) => await fetchAllProducts(userId)
   );
 }
 
-export function useOrders(user: string) {
+export function useOrders(user: string | null) {
   return useQuery(
     [FETCH_ALL_ORDERS_KEY, { user }],
     async (key, { user: userId }) => await fetchAllOrders(userId)

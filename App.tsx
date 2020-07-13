@@ -33,7 +33,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <ReactQueryConfigProvider config={{ queries: { retry: false } }}>
-          <AppStackScreen isLoggedIn={false} />
+          <AppStackScreen />
         </ReactQueryConfigProvider>
       </NavigationContainer>
     </Provider>

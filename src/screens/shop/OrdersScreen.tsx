@@ -11,19 +11,23 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useSelector } from 'react-redux';
 
 import { OrdersStackParamsList } from '../../navigation/OrdersStackScreen';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import OrderItem from '../../components/shop/OrderItem';
 import { useOrders, useRefetchOnFocus } from '../../service/query-hooks';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { RootState } from '../../store';
 
 interface OrdersScreenProps {
   navigation: StackNavigationProp<OrdersStackParamsList, 'Orders'> & DrawerNavigationProp<{}>;
 }
 
 const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
-  const { isLoading, isError, isFetching, data: orders, refetch } = useOrders('u1');
+  const userId = useSelector((state: RootState) => state.auth.userId);
+
+  const { isLoading, isError, isFetching, data: orders, refetch } = useOrders(userId);
   useRefetchOnFocus(refetch);
 
   useLayoutEffect(() => {

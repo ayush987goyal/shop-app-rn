@@ -13,6 +13,7 @@ import { saveOrder } from '../../service/service';
 const CartScreen = () => {
   const totalAmount = useSelector((state: RootState) => state.cart.totalAmount);
   const cartItems = useSelector((state: RootState) => Object.values(state.cart.items));
+  const authData = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   const [mutate, { isLoading, reset }] = useMutation(saveOrder, {
@@ -38,7 +39,9 @@ const CartScreen = () => {
             title="Order Now"
             color={Colors.accent}
             disabled={cartItems.length === 0}
-            onPress={() => mutate({ cartItems, totalAmount })}
+            onPress={() =>
+              mutate({ cartItems, totalAmount, userId: authData.userId, token: authData.token })
+            }
           />
         )}
       </Card>

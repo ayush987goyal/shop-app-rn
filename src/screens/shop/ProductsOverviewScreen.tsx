@@ -29,7 +29,7 @@ interface ProductsOverviewScreenProps {
 const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { isLoading, isError, isFetching, data: products, refetch } = useProducts();
+  const { isLoading, isError, isFetching, data: products, refetch } = useProducts(null);
   useRefetchOnFocus(refetch);
 
   useLayoutEffect(() => {

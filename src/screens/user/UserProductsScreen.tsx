@@ -13,7 +13,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { queryCache } from 'react-query';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
 import Colors from '../../constants/Colors';
@@ -23,13 +23,16 @@ import { Product } from '../../models';
 import { useProducts, useRefetchOnFocus, FETCH_ALL_PRODUCTS_KEY } from '../../service/query-hooks';
 import { deleteProduct } from '../../service/service';
 import { deleteProductInCart } from '../../store/cartSlice';
+import { RootState } from '../../store';
 
 interface UserProductsScreenProps {
   navigation: StackNavigationProp<AdminStackParamsList, 'UserProducts'> & DrawerNavigationProp<{}>;
 }
 
 const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) => {
-  const { isLoading, isError, data: products, refetch } = useProducts('u1');
+  const authData = useSelector((state: RootState) => state.auth);
+
+  const { isLoading, isError, isFetching, data: products, refetch } = useProducts(authData.userId);
   useRefetchOnFocus(refetch);
 
   const dispath = useDispatch();
@@ -68,7 +71,7 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
         text: 'Yes',
         style: 'destructive',
         onPress: async () => {
-          await deleteProduct(productId);
+          await deleteProduct(productId, authData.token);
           dispath(deleteProductInCart(productId));
           await queryCache.invalidateQueries(FETCH_ALL_PRODUCTS_KEY);
         },
@@ -103,6 +106,8 @@ const UserProductsScreen: React.FC<UserProductsScreenProps> = ({ navigation }) =
 
   return (
     <FlatList
+      onRefresh={refetch}
+      refreshing={isFetching}
       data={products}
       keyExtractor={item => item.id}
       renderItem={itemData => (

@@ -3,7 +3,8 @@ import { StyleSheet, View, ScrollView, Platform, ActivityIndicator, Alert } from
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { queryCache, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
+import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
@@ -11,8 +12,8 @@ import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import Input from '../../components/UI/Input';
 import { saveProduct, updateProduct } from '../../service/service';
-import { FETCH_ALL_PRODUCTS_KEY } from '../../service/query-hooks';
 import Colors from '../../constants/Colors';
+import { RootState } from '../../store';
 
 interface ProductFormValues {
   title: string;
@@ -36,8 +37,9 @@ interface EditProductScreenProps {
 const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation }) => {
   const { product } = route.params;
 
+  const authData = useSelector((state: RootState) => state.auth);
+
   const mutationSuccessHandler = async () => {
-    await queryCache.invalidateQueries(FETCH_ALL_PRODUCTS_KEY);
     navigation.goBack();
   };
 
@@ -82,9 +84,21 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
       const { title, imageUrl, price, description } = fieldValues;
 
       if (product) {
-        updateProductMutate({ id: product.id, title, imageUrl, description });
+        updateProductMutate({
+          productData: { id: product.id, title, imageUrl, description },
+          token: authData.token,
+        });
       } else {
-        saveProductMutate({ price: +price, title, imageUrl, description, ownerId: 'u1' });
+        saveProductMutate({
+          productData: {
+            price: +price,
+            title,
+            imageUrl,
+            description,
+            ownerId: authData.userId || '',
+          },
+          token: authData.token,
+        });
       }
     },
   });
