@@ -6,8 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { setAuthData } from '../store/authSlice';
 import StartupScreen from '../screens/StartupScreen';
-import ShopDrawerScreen from './ShopDrawerScreen';
-import AuthStackScreen from './AuthStackScreen';
+import ShopDrawerScreen from './shop/ShopDrawerScreen';
+import AuthStackScreen from './auth/AuthStackScreen';
 
 const AppStack = createStackNavigator();
 

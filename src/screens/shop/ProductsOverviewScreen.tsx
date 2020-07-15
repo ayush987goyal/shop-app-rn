@@ -14,7 +14,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import { Product } from '../../models';
-import { ProductsStackParamsList } from '../../navigation/ProductStackScreen';
+import { ProductsStackParamsList } from '../../navigation/shop/ProductStackScreen';
 import { addToCart } from '../../store/cartSlice';
 import { useProducts, useRefetchOnFocus } from '../../service/query-hooks';
 import Colors from '../../constants/Colors';

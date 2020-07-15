@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
+import { AdminStackParamsList } from '../../navigation/shop/AdminStackScreen';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import Input from '../../components/UI/Input';
 import { saveProduct, updateProduct } from '../../service/service';

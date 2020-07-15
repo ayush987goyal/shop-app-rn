@@ -1,10 +1,10 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { Product } from '../models';
-import { defaultStackScreenOptions } from './helper';
-import UserProductsScreen from '../screens/user/UserProductsScreen';
-import EditProductScreen from '../screens/user/EditProductScreen';
+import { Product } from '../../models';
+import { defaultStackScreenOptions } from '../helper';
+import UserProductsScreen from '../../screens/user/UserProductsScreen';
+import EditProductScreen from '../../screens/user/EditProductScreen';
 
 const AdminStack = createStackNavigator();
 

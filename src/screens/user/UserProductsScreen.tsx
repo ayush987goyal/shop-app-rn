@@ -15,7 +15,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { queryCache } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AdminStackParamsList } from '../../navigation/AdminStackScreen';
+import { AdminStackParamsList } from '../../navigation/shop/AdminStackScreen';
 import Colors from '../../constants/Colors';
 import ProductItem from '../../components/shop/ProductItem';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';

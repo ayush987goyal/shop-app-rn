@@ -13,7 +13,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector } from 'react-redux';
 
-import { OrdersStackParamsList } from '../../navigation/OrdersStackScreen';
+import { OrdersStackParamsList } from '../../navigation/shop/OrdersStackScreen';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import OrderItem from '../../components/shop/OrderItem';
 import { useOrders, useRefetchOnFocus } from '../../service/query-hooks';
