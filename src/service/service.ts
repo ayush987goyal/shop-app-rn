@@ -20,7 +20,7 @@ interface SaveOrderPayload {
   token: string | null;
 }
 
-const BASE_URL = 'https://meals-rn-app.firebaseio.com';
+const BASE_URL = 'https://meals-rn-app-7b24f.firebaseio.com/';
 const API_KEY = Constants.manifest.extra.apiKey;
 
 export async function fetchAllProducts(user: string | null): Promise<Product[]> {
@@ -86,6 +86,7 @@ export async function authenticate(authData: {
     const errorId = errorRes.error.message;
     let message = '';
 
+    console.log('yo error', errorRes);
     switch (errorId) {
       case 'EMAIL_NOT_FOUND':
         message = 'This email could not be found!';

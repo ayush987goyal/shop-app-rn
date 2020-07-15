@@ -1,11 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { Product } from '../models';
-import { defaultStackScreenOptions } from './helper';
-import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
-import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
-import CartScreen from '../screens/shop/CartScreen';
+import { Product } from '../../models';
+import { defaultStackScreenOptions } from '../helper';
+import ProductsOverviewScreen from '../../screens/shop/ProductsOverviewScreen';
+import ProductDetailScreen from '../../screens/shop/ProductDetailScreen';
+import CartScreen from '../../screens/shop/CartScreen';
 
 const ProductsStack = createStackNavigator();
 

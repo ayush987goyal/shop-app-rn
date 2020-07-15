@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { defaultStackScreenOptions } from './helper';
-import OrdersScreen from '../screens/shop/OrdersScreen';
+import { defaultStackScreenOptions } from '../helper';
+import OrdersScreen from '../../screens/shop/OrdersScreen';
 
 const OrdersStack = createStackNavigator();
 

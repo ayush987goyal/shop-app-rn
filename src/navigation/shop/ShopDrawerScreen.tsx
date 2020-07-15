@@ -10,11 +10,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
 
-import Colors from '../constants/Colors';
+import Colors from '../../constants/Colors';
 import ProductsStackScreen from './ProductStackScreen';
 import OrdersStackScreen from './OrdersStackScreen';
 import AdminStackScreen from './AdminStackScreen';
-import { clearAuthData } from '../store/authSlice';
+import { clearAuthData } from '../../store/authSlice';
 
 const ShopDrawer = createDrawerNavigator();
 
