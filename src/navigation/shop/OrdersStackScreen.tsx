@@ -4,7 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { defaultStackScreenOptions } from '../helper';
 import OrdersScreen from '../../screens/shop/OrdersScreen';
 
-const OrdersStack = createStackNavigator();
+export type OrdersStackParamsList = {
+  Orders: undefined;
+};
+
+const OrdersStack = createStackNavigator<OrdersStackParamsList>();
 
 const OrdersStackScreen = () => (
   <OrdersStack.Navigator screenOptions={defaultStackScreenOptions}>
@@ -15,9 +19,5 @@ const OrdersStackScreen = () => (
     />
   </OrdersStack.Navigator>
 );
-
-export type OrdersStackParamsList = {
-  Orders: undefined;
-};
 
 export default OrdersStackScreen;

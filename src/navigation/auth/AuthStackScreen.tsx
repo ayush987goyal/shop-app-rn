@@ -4,7 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { defaultStackScreenOptions } from '../helper';
 import AuthScreen from '../../screens/user/AuthScreen';
 
-const AuthStack = createStackNavigator();
+export type AuthStackParamsList = {
+  Auth: undefined;
+};
+
+const AuthStack = createStackNavigator<AuthStackParamsList>();
 
 const AuthStackScreen = () => (
   <AuthStack.Navigator screenOptions={defaultStackScreenOptions}>
@@ -15,9 +19,5 @@ const AuthStackScreen = () => (
     />
   </AuthStack.Navigator>
 );
-
-export type AuthStackParamsList = {
-  Auth: undefined;
-};
 
 export default AuthStackScreen;

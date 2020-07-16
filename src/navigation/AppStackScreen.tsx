@@ -9,7 +9,13 @@ import StartupScreen from '../screens/StartupScreen';
 import ShopDrawerScreen from './shop/ShopDrawerScreen';
 import AuthStackScreen from './auth/AuthStackScreen';
 
-const AppStack = createStackNavigator();
+export type AppStackParamsList = {
+  Startup: undefined;
+  AuthStack: undefined;
+  ShopStack: undefined;
+};
+
+const AppStack = createStackNavigator<AppStackParamsList>();
 
 const AppStackScreen = () => {
   const [tryingAutologin, setTryingAutologin] = useState(true);
@@ -52,11 +58,6 @@ const AppStackScreen = () => {
       )}
     </AppStack.Navigator>
   );
-};
-
-export type AppStackParamsList = {
-  AuthStack: undefined;
-  ShopStack: undefined;
 };
 
 export default AppStackScreen;

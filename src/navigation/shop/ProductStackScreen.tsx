@@ -7,7 +7,13 @@ import ProductsOverviewScreen from '../../screens/shop/ProductsOverviewScreen';
 import ProductDetailScreen from '../../screens/shop/ProductDetailScreen';
 import CartScreen from '../../screens/shop/CartScreen';
 
-const ProductsStack = createStackNavigator();
+export type ProductsStackParamsList = {
+  ProductsOverview: undefined;
+  ProductDetail: { product: Product };
+  Cart: undefined;
+};
+
+const ProductsStack = createStackNavigator<ProductsStackParamsList>();
 
 const ProductsStackScreen = () => (
   <ProductsStack.Navigator screenOptions={defaultStackScreenOptions}>
@@ -24,11 +30,5 @@ const ProductsStackScreen = () => (
     />
   </ProductsStack.Navigator>
 );
-
-export type ProductsStackParamsList = {
-  ProductsOverview: undefined;
-  ProductDetail: { product: Product };
-  Cart: undefined;
-};
 
 export default ProductsStackScreen;

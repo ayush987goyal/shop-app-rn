@@ -16,7 +16,13 @@ import OrdersStackScreen from './OrdersStackScreen';
 import AdminStackScreen from './AdminStackScreen';
 import { clearAuthData } from '../../store/authSlice';
 
-const ShopDrawer = createDrawerNavigator();
+export type ShopDrawerParamsList = {
+  Products: undefined;
+  Orders: undefined;
+  Admin: undefined;
+};
+
+const ShopDrawer = createDrawerNavigator<ShopDrawerParamsList>();
 
 const ShopDrawerContent = (props: DrawerContentComponentProps) => {
   const dispatch = useDispatch();

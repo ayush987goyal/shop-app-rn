@@ -1,7 +1,10 @@
 import 'dotenv/config';
 
-export default {
-  extra: {
-    apiKey: process.env.API_KEY,
-  },
+export default ({ config }) => {
+  return {
+    ...config,
+    extra: {
+      apiKey: process.env.API_KEY,
+    },
+  };
 };

@@ -6,7 +6,12 @@ import { defaultStackScreenOptions } from '../helper';
 import UserProductsScreen from '../../screens/user/UserProductsScreen';
 import EditProductScreen from '../../screens/user/EditProductScreen';
 
-const AdminStack = createStackNavigator();
+export type AdminStackParamsList = {
+  UserProducts: undefined;
+  EditProduct: { product?: Product };
+};
+
+const AdminStack = createStackNavigator<AdminStackParamsList>();
 
 const AdminStackScreen = () => (
   <AdminStack.Navigator screenOptions={defaultStackScreenOptions}>
@@ -18,10 +23,5 @@ const AdminStackScreen = () => (
     <AdminStack.Screen name="EditProduct" component={EditProductScreen} />
   </AdminStack.Navigator>
 );
-
-export type AdminStackParamsList = {
-  UserProducts: undefined;
-  EditProduct: { product?: Product };
-};
 
 export default AdminStackScreen;
