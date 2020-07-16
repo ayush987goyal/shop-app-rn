@@ -7,6 +7,8 @@ import { useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
 
 import { AdminStackParamsList } from '../../navigation/shop/AdminStackScreen';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
@@ -80,7 +82,7 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
       description: product?.description || '',
     },
     validationSchema: productSchema,
-    onSubmit: fieldValues => {
+    onSubmit: async fieldValues => {
       const { title, imageUrl, price, description } = fieldValues;
 
       if (product) {
@@ -89,6 +91,15 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
           token: authData.token,
         });
       } else {
+        let pushToken: string | null = null;
+        let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        if (!statusObj.granted) {
+          statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        }
+        if (statusObj.granted) {
+          pushToken = (await Notifications.getExpoPushTokenAsync()).data;
+        }
+
         saveProductMutate({
           productData: {
             price: +price,
@@ -96,6 +107,7 @@ const EditProductScreen: React.FC<EditProductScreenProps> = ({ route, navigation
             imageUrl,
             description,
             ownerId: authData.userId || '',
+            ownerPushToken: pushToken,
           },
           token: authData.token,
         });

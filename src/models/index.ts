@@ -5,6 +5,7 @@ export interface Product {
   imageUrl: string;
   description: string;
   price: number;
+  ownerPushToken: string | null;
 }
 
 export interface CartUnit {
@@ -12,6 +13,7 @@ export interface CartUnit {
   productId: string;
   productTitle: string;
   productPrice: number;
+  productPushToken: string | null;
   sum: number;
 }
 

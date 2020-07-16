@@ -33,6 +33,7 @@ const cartSlice = createSlice({
           productId: product.id,
           productTitle: product.title,
           productPrice: product.price,
+          productPushToken: product.ownerPushToken,
           sum: product.price,
         };
       }

@@ -8,7 +8,7 @@ import { removeFromCart, clearCart } from '../../store/cartSlice';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
 import Card from '../../components/UI/Card';
-import { saveOrder } from '../../service/service';
+import { saveOrder, sendPushNotifications } from '../../service/service';
 
 const CartScreen = () => {
   const totalAmount = useSelector((state: RootState) => state.cart.totalAmount);
@@ -20,8 +20,9 @@ const CartScreen = () => {
     onError: (error: Error) => {
       Alert.alert('An error occured!', error.message, [{ text: 'Okay', onPress: reset }]);
     },
-    onSuccess: () => {
+    onSuccess: async (_, { cartItems: items }) => {
       dispatch(clearCart());
+      sendPushNotifications(items);
     },
   });
 

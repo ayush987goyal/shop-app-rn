@@ -9,7 +9,7 @@ interface SaveProductPayload {
 }
 
 interface UpdateProductPayload {
-  productData: Omit<Product, 'price' | 'ownerId'>;
+  productData: Omit<Product, 'price' | 'ownerId' | 'ownerPushToken'>;
   token: string | null;
 }
 
@@ -103,4 +103,26 @@ export async function authenticate(authData: {
 
     throw new Error(message);
   }
+}
+
+export function sendPushNotifications(cartItems: CartUnit[]) {
+  const requests = cartItems.map(item =>
+    axios.post(
+      'https://exp.host/--/api/v2/push/send',
+      {
+        to: item.productPushToken,
+        title: 'Order was placed!',
+        body: item.productTitle,
+      },
+      {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Encoding': 'gzip, deflat',
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+  );
+
+  Promise.all(requests);
 }
