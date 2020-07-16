@@ -5,6 +5,7 @@ import { AppLoading } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
 import { setConsole, ReactQueryConfigProvider } from 'react-query';
 import * as Font from 'expo-font';
+import * as Notifications from 'expo-notifications';
 
 import store from './src/store';
 import AppStackScreen from './src/navigation/AppStackScreen';
@@ -13,6 +14,14 @@ setConsole({
   log: console.log,
   warn: console.log,
   error: console.log,
+});
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldShowAlert: true,
+    shouldSetBadge: true,
+  }),
 });
 
 const fetchFonts = () => {
